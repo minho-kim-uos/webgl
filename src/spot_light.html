@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>Spot Light (WebGL 2.0)</title>
+	</head>
+	<body>
+		<h1 align=center>Spot Light (WebGL 2.0)</h1>
+		<canvas id="webgl" width="512" height="512">
+			Please use a browser that supports "canvas"
+		</canvas>
+		<table>
+			<tr>
+				<td>material</td>
+				<td><select id="materials"></select></td>
+			</tr>
+			<tr>
+				<td>shading model</td>
+				<td>
+					<select id="shading-models">
+						<option value="Blinn-Gouraud">Blinn-Gouraud</option>
+						<option value="Phong-Gouraud">Phong-Gouraud</option>
+						<option value="Blinn-Phong">Blinn-Phong</option>
+						<option value="Phong-Phong" selected>Phong-Phong</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>cut-off angle</td>
+				<td>
+					<input id="cutoff-angle" type="range" min="0" max="90" value="30">
+				</td>
+			</tr>
+			<tr>
+				<td>object</td>
+				<td>
+					<select id="objects">
+						<option value="cube">cube</option>
+						<option value="sphere">sphere</option>
+						<option value="monkey (smooth)" selected>monkey (smooth)</option>
+						<option value="monkey">monkey</option>
+						<option value="monkey (subdivided 2 steps, smooth)">monkey (subdivided 2 steps, smooth)</option>
+					</select>
+				</td>
+			</tr>
+		</table>
+		<script src="../resources/monkey.js"></script>
+		<script src="../resources/monkey_smooth.js"></script>
+		<script src="../resources/monkey_sub2_smooth.js"></script>
+		<script type="module" src="spot_light.js"></script>
+	</body>
+</html>

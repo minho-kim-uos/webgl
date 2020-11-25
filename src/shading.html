@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>Shading models (WebGL 2.0)</title>
+	</head>
+	<body>
+		<h1 align=center>Shading models (WebGL 2.0)</h1>
+		<canvas id="webgl" width="512" height="512">
+			Please use a browser that supports "canvas"
+		</canvas>
+		<table>
+			<tr>
+				<td>material</td>
+				<td><select id="materials"></select></td>
+			</tr>
+			<tr>
+				<td>shading model</td>
+				<td>
+					<select id="shading-models">
+						<option value="Blinn-Gouraud" selected>Blinn-Gouraud</option>
+						<option value="Phong-Gouraud">Phong-Gouraud</option>
+						<option value="Blinn-Phong">Blinn-Phong</option>
+						<option value="Phong-Phong">Phong-Phong</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td><input type="checkbox" id="light1" checked>static light</td>
+				<td>
+					(
+					type
+					<select id="light1-type">
+						<option value="directional">directional</option>
+						<option value="positional" selected>positional</option>
+					</select>
+					)
+				</td>
+				
+			</tr>
+			<tr>
+				<td><input type="checkbox" id="light0" checked>rotating light</td>
+				<td>
+					(
+					type
+					<select id="light0-type">
+						<option value="directional">directional</option>
+						<option value="positional" selected>positional</option>
+					</select>
+					)
+				</td>
+			</tr>
+			<tr>
+				<td>object</td>
+				<td>
+					<select id="objects">
+						<option value="cube">cube</option>
+						<option value="sphere">sphere</option>
+						<option value="monkey (smooth)" selected>monkey (smooth)</option>
+						<option value="monkey">monkey</option>
+						<option value="monkey (subdivided 2 steps, smooth)">monkey (subdivided 2 steps, smooth)</option>
+					</select>
+					(
+					<input type="checkbox" id="mesh-rotating" >
+					rotating)
+				</td>
+			</tr>
+		</table>
+		<script src="../resources/monkey.js"></script>
+		<script src="../resources/monkey_smooth.js"></script>
+		<script src="../resources/monkey_sub2_smooth.js"></script>
+		<script type="module" src="shading.js"></script>
+	</body>
+</html>
