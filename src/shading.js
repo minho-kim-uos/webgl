@@ -32,10 +32,10 @@ function main()
     const list_shaders = [];
     
     const uniform_vars = ["MVP", "MV", "matNormal"];
-    Array.prototype.push.apply(uniform_vars, Light.generate_uniform_names("light[0]"));
-    Array.prototype.push.apply(uniform_vars, Light.generate_uniform_names("light[1]"));
-    Array.prototype.push.apply(uniform_vars, Material.generate_uniform_names("material"));
-    
+    uniform_vars.push(...Light.generate_uniform_names("light[0]"));
+    uniform_vars.push(...Light.generate_uniform_names("light[1]"));
+    uniform_vars.push(...Material.generate_uniform_names("material"));
+
     const list_shader_source = 
     {
         "vert-Phong-Gouraud":shaders.src_vert_Phong_Gouraud({loc_aPosition, loc_aNormal, numLights}), 
