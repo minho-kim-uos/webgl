@@ -147,10 +147,10 @@ export class Mesh
     }
     set_uniform_material(gl, shader, mat)
     {
-        gl.uniform3fv(gl.getUniformLocation(shader.h_prog, "material.ambient"), mat.ambient);
-        gl.uniform3fv(gl.getUniformLocation(shader.h_prog, "material.diffuse"), mat.diffusive);
-        gl.uniform3fv(gl.getUniformLocation(shader.h_prog, "material.specular"), mat.specular);
-        gl.uniform1f(gl.getUniformLocation(shader.h_prog, "material.shininess"), mat.shininess*128.0);
+        gl.uniform3fv(shader.loc_uniforms["material.ambient"], mat.ambient);
+        gl.uniform3fv(shader.loc_uniforms["material.diffuse"], mat.diffusive);
+        gl.uniform3fv(shader.loc_uniforms["material.specular"], mat.specular);
+        gl.uniform1f( shader.loc_uniforms["material.shininess"], mat.shininess*128.0);
     }
     set_uniform_texture(gl, shader, textures)
     {
