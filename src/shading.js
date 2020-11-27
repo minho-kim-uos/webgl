@@ -31,11 +31,6 @@ function main()
  
     const list_shaders = [];
     
-    const uniform_vars = ["MVP", "MV", "matNormal"];
-    uniform_vars.push(...Light.generate_uniform_names("light[0]"));
-    uniform_vars.push(...Light.generate_uniform_names("light[1]"));
-    uniform_vars.push(...Material.generate_uniform_names("material"));
-
     const list_shader_source = 
     {
         "vert-Phong-Gouraud":shaders.src_vert_Phong_Gouraud({loc_aPosition, loc_aNormal, numLights}), 
@@ -56,8 +51,7 @@ function main()
     {
         list_shaders[model] = new Shader(gl, 
             list_shader_source["vert-" + model],
-            list_shader_source["frag-" + model],
-            uniform_vars);
+            list_shader_source["frag-" + model]);
     }
     
     // initializes the material combobox

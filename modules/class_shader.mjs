@@ -1,6 +1,7 @@
 
 export class Shader
 {
+    // TODO: remove <uniform_vars> parameter (2020/11/27)
     constructor(gl, src_vert, src_frag, uniform_vars=undefined)
     {
         this.h_prog = createProgram(gl, src_vert, src_frag);
@@ -11,6 +12,16 @@ export class Shader
             for(let uniform of uniform_vars)
             {
                 this.loc_uniforms[uniform] = gl.getUniformLocation(this.h_prog, uniform);
+            }
+        }
+        else
+        {
+            let num_uniforms = gl.getProgramParameter(this.h_prog, gl.ACTIVE_UNIFORMS);
+            this.loc_uniforms = {};
+            let uniform_info;
+            for(let i=0 ; i<num_uniforms ; i++) {
+                uniform_info = gl.getActiveUniform(this.h_prog, i);
+                this.loc_uniforms[uniform_info.name] = gl.getUniformLocation(this.h_prog, uniform_info.name);
             }
         }
 
