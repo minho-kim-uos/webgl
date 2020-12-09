@@ -59,9 +59,10 @@ function render(gl, vao, n, ubo, buffer, matR, matT, matS)
     mat4.fromScaling(matS, [s,s,s]);
     
     gl.bindBuffer(gl.UNIFORM_BUFFER, ubo);
-    gl.bufferSubData(gl.UNIFORM_BUFFER, 0, matR);
-    gl.bufferSubData(gl.UNIFORM_BUFFER, 4*16, matT);
-    gl.bufferSubData(gl.UNIFORM_BUFFER, 4*16*2, matS);
+    // The contents of ``buffer'' is updated
+    // since matR, matT, matS all reference
+    // parts of ``buffer''
+    gl.bufferSubData(gl.UNIFORM_BUFFER, 0, buffer);
     gl.bindBuffer(gl.UNIFORM_BUFFER, null);
     
     gl.clear(gl.COLOR_BUFFER_BIT);
