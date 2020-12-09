@@ -109,13 +109,14 @@ function initUBO(gl, prog) {
 
     const buffer = new ArrayBuffer(FSIZE*16*3);
 
-    // We re-assign the matrices
-    // to the `DataView' in the buffer.
-    // Old `Float32Array' objects referenced by `elements' will be garbage-collected later.
-    // From now on, all the matrix operations will modify data in `buffer'.
-    let matR = new Float32Array(buffer, 0, 16);
-    let matT = new Float32Array(buffer, FSIZE*16, 16);
-    let matS = new Float32Array(buffer, FSIZE*16*2, 16);
+    // We create matrices as `DataView' in the buffer,
+    // instead of calling mat4.create().
+    // In fact, what mat4.create() does is to
+    // create a Float32Array and initialize it as an identity.
+    // https://github.com/toji/gl-matrix/blob/master/src/mat4.js
+    let matR = new Float32Array(buffer, 0, 16);             mat4.identity(matR);
+    let matT = new Float32Array(buffer, FSIZE*16, 16);      mat4.identity(matT);
+    let matS = new Float32Array(buffer, FSIZE*16*2, 16);    mat4.identity(matS);
 
     gl.bindBuffer(gl.UNIFORM_BUFFER, ubo);
     gl.bufferData(gl.UNIFORM_BUFFER, FSIZE*16*3, gl.DYNAMIC_DRAW);
