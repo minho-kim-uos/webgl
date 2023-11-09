@@ -32,6 +32,15 @@ function main() {
     const quad = init_vbo_quad({gl, loc_aPosition});
     
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
+
+    Array.prototype.push_clone_and_return_top = function(entry) {
+        this.push(mat4.clone(entry))
+        return this[this.length-1]
+    }
+    Array.prototype.pop_and_return_top = function() {
+        this.pop()
+        return this[this.length-1]
+    }
     
     set_slider_callbacks("x_R", function(ev) {render_scene(gl, shader, quad);});
     set_slider_callbacks("y_R", function(ev) {render_scene(gl, shader, quad);});
@@ -82,8 +91,9 @@ function render_scene(gl, shader, quad)
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.useProgram(shader.h_prog);
     
-    let MatStack = [];
     let MVP = mat4.create();
+    let MatStack = [];
+    MVP = MatStack.push_clone_and_return_top(MVP)
     
     /*
                      P
@@ -119,36 +129,35 @@ function render_scene(gl, shader, quad)
     
     mat4.translate(MVP, MVP, [x_R, y_R, 0]); // T_base
     mat4.rotate(MVP, MVP, toRadian(angle_R), [0, 0, 1]);   // Rr
-    MatStack.push(mat4.clone(MVP));
+    MVP = MatStack.push_clone_and_return_top(MVP)
         mat4.translate(MVP, MVP, [(length_R-WIDTH_RED)/2.0, 0, 0.1]);    // Tr_low
         mat4.scale(MVP, MVP, [length_R, WIDTH_RED, 1]);  // Sr
         render_quad(gl, shader, quad, {MVP:MVP, color:[1,0,0]});    // red quad
-    MVP = MatStack.pop();
+    MVP = MatStack.pop_and_return_top()
     
     mat4.translate(MVP, MVP, [length_R - WIDTH_RED, 0, 0]);  // Tr_high
     mat4.rotate(MVP, MVP, toRadian(angle_G), [0, 0, 1]);   // Rg
-    MatStack.push(mat4.clone(MVP));
+    MVP = MatStack.push_clone_and_return_top(MVP)
         mat4.translate(MVP, MVP, [(length_G - WIDTH_GREEN)/2.0, 0, 0]);  // Tg_low
         mat4.scale(MVP, MVP, [length_G, WIDTH_GREEN, 1]);    // Sg
         render_quad(gl, shader, quad, {MVP:MVP, color:[0,1,0]});    // green quad
-    mat4.copy(MVP, MatStack.pop());
+    MVP = MatStack.pop_and_return_top()
     
-    MatStack.push(mat4.clone(MVP));
+    MVP = MatStack.push_clone_and_return_top(MVP)
         mat4.translate(MVP, MVP, [length_G - WIDTH_GREEN + WIDTH_BLUE/2.0, WIDTH_BLUE/2.0, 0]); // Tg_high1
         mat4.rotate(MVP, MVP, toRadian(angle_B), [0, 0, 1]);    // Rb1
         mat4.translate(MVP, MVP, [(length_B - WIDTH_BLUE)/2.0, 0, 0.3]);   // Tb
         mat4.scale(MVP, MVP, [length_B, WIDTH_BLUE, 1]);   // Sb
         render_quad(gl, shader, quad, {MVP:MVP, color:[0,0,1]});    // blue quad
-    mat4.copy(MVP, MatStack.pop());
+    MVP = MatStack.pop_and_return_top()
     
-    MatStack.push(mat4.clone(MVP));
+    MVP = MatStack.push_clone_and_return_top(MVP)
         mat4.translate(MVP, MVP, [length_G - WIDTH_GREEN + WIDTH_BLUE/2.0, -WIDTH_BLUE/2.0, 0]);    // Tg_high2
         mat4.rotate(MVP, MVP, toRadian(-angle_B), [0, 0, 1]);   // Rb2
         mat4.translate(MVP, MVP, [(length_B - WIDTH_BLUE)/2.0, 0, 0.3]);   // Tb
         mat4.scale(MVP, MVP, [length_B, WIDTH_BLUE, 1]);   // Sb
         render_quad(gl, shader, quad, {MVP:MVP, color:[0,0,1]});    // blue quad
-    mat4.copy(MVP, MatStack.pop());
-
+    MVP = MatStack.pop_and_return_top()
 }
 
 function init_vbo_quad({gl, loc_aPosition})
