@@ -35,11 +35,11 @@ function main() {
 
     Array.prototype.push_clone_and_return_top = function(entry) {
         this.push(mat4.clone(entry))
-        return this[this.length-1]
+        return this.at(-1)
     }
     Array.prototype.pop_and_return_top = function() {
         this.pop()
-        return this[this.length-1]
+        return this.at(-1)
     }
     
     set_slider_callbacks("x_R", function(ev) {render_scene(gl, shader, quad);});
