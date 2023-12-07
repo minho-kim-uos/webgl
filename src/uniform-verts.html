@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>univorm vertices</title>
+  </head>
+
+  <body>
+    <h1 align=center>uniform vertices</h1>
+    <h2 align=center>(Rendering without vertex attributes)</h2>
+    <div align=center>
+    <canvas id="webgl" width="512" height="512" align=center>
+    Please use a browser that supports "canvas"
+    </canvas>
+    </div>
+
+    <script type="module">
+const binding_verts = 3;
+const loc_aPosition = 7;
+const count_instances = 3;
+
+function main()
+{
+ 
+    const src_vert = 
+    `#version 300 es
+        struct Vertex {
+            vec4 position;
+            vec4 color;
+        };
+        uniform Vertices {
+            Vertex[4*${count_instances}] vertices;
+        };
+        out vec4 vColor;
+        void main()
+        {
+            gl_Position = vertices[gl_InstanceID*4 + gl_VertexID].position;
+            vColor = vertices[gl_InstanceID*4 + gl_VertexID].color;
+        }
+    `;
+    const src_frag = 
+    `#version 300 es
+        precision mediump float;
+        in vec4 vColor;
+        out vec4 fColor;
+        void main()
+        {
+            fColor = vColor;
+        }
+    `;
+ 
+ 
+    // Getting the WebGL context
+    const canvas = document.getElementById('webgl');
+    const gl = canvas.getContext("webgl2");
+ 
+    const h_prog = init_shaders(gl, src_vert, src_frag);
+ 
+    const {vao, num_indices} = init_vao(gl);
+
+    const ubo = init_ubo(gl, h_prog);
+
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+
+    const verts = new Float32Array([
+                        // quad #0
+                        0.1, 0.1, 0, 1,
+                        1, 0, 0, 1,
+                        0.9, 0.1, 0, 1,
+                        0, 1, 0, 1,
+                        0.9, 0.9, 0, 1,
+                        0, 0, 1, 1,
+                        0.1, 0.9, 0, 1,
+                        1, 1, 1, 1,
+
+                        // quad #1
+                        -0.1, -0.1, 0, 1,
+                        0, 1, 1, 1,
+                        -0.9, -0.1, 0, 1,
+                        1, 0, 1, 1,
+                        -0.9, -0.9, 0, 1,
+                        1, 1, 0, 1,
+                        -0.1, -0.9, 0, 1,
+                        0, 0, 0, 1,
+
+                        // quad #2
+                        0.5, 0, 0, 1,
+                        1, 0, 0, 1,
+                        0, -0.5, 0, 1,
+                        1, 1, 0, 1,
+                        0.5, -1, 0, 1,
+                        1, 1, 1, 1,
+                        1, -0.5, 0, 1,
+                        0, 1, 0, 1,
+                        ]);
+ 
+    gl.bindBuffer(gl.UNIFORM_BUFFER, ubo);
+    gl.bufferSubData(gl.UNIFORM_BUFFER, 0, verts);
+    gl.bindBuffer(gl.UNIFORM_BUFFER, null);
+ 
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.useProgram(h_prog);
+    gl.bindVertexArray(vao);
+    gl.drawElementsInstanced(gl.TRIANGLES, num_indices, gl.UNSIGNED_SHORT, 0, count_instances);
+    gl.bindVertexArray(null);
+ 
+}
+
+function init_shaders(gl, src_vert, src_frag)
+{
+    // Compiling the shaders
+    const h_prog = gl.createProgram();
+ 
+    const h_vert = gl.createShader(gl.VERTEX_SHADER);
+    gl.shaderSource(h_vert, src_vert);
+    gl.compileShader(h_vert);
+    gl.attachShader(h_prog, h_vert);
+ 
+    const h_frag = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(h_frag, src_frag);
+    gl.compileShader(h_frag);
+    gl.attachShader(h_prog, h_frag);
+ 
+    gl.linkProgram(h_prog);
+
+    return h_prog;
+ 
+}
+ 
+function init_vao(gl)
+{
+    const indices = new Uint16Array([ 0, 1, 2, 0, 2, 3 ]);
+
+    const vao = gl.createVertexArray();
+    gl.bindVertexArray(vao);
+ 
+    const ibo = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+ 
+    gl.bindVertexArray(null);   // Unbind the VAO
+     
+    gl.disableVertexAttribArray(loc_aPosition); 
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+    return {vao, num_indices:indices.length};
+}
+
+function init_ubo(gl, h_prog) 
+{
+    const idx_ub_verts = gl.getUniformBlockIndex(h_prog, 'Vertices');
+    gl.uniformBlockBinding(h_prog, idx_ub_verts, binding_verts);
+ 
+    const ubo_verts = gl.createBuffer();
+    gl.bindBufferBase(gl.UNIFORM_BUFFER, binding_verts, ubo_verts);
+
+    const FSIZE = 4;
+    gl.bindBuffer(gl.UNIFORM_BUFFER, ubo_verts);
+    gl.bufferData(gl.UNIFORM_BUFFER, FSIZE*4*4*2*count_instances, gl.DYNAMIC_DRAW);
+    gl.bindBuffer(gl.UNIFORM_BUFFER, null);
+ 
+    return ubo_verts;
+}
+
+
+ 
+main();
+    </script>
+  </body>
+</html>
